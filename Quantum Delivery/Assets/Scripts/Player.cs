@@ -11,6 +11,14 @@ public class Player : MonoBehaviour
     float speed = 5.0f;
     float turnSpeed = 30.0f;
 
+    public int powerSupply = 100;
+    int maxPowerSupply = 100;
+    bool isCharging = false;
+
+    float timeSinceLastPowerDecrease = 0f;
+    float powerDecreaseInterval = 60f;
+
+
     public GameObject[] lights; 
     bool lightsOn = false;
 
@@ -40,13 +48,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-        verticalInput = Input.GetAxis("Vertical");
-
         
-        transform.Translate(Vector3.forward * Time.deltaTime * speed * verticalInput);
-
-        transform.Rotate(Vector3.up * horizontalInput * turnSpeed * Time.deltaTime);
+        Moving();
 
 
 
@@ -96,5 +99,64 @@ public class Player : MonoBehaviour
             smoke.Stop();
         }
 
+        if (Mathf.Abs(horizontalInput) > 0.1f || Mathf.Abs(verticalInput) > 0.1f)
+        {
+            timeSinceLastPowerDecrease += Time.deltaTime;
+
+            if (timeSinceLastPowerDecrease >= powerDecreaseInterval)
+            {
+                timeSinceLastPowerDecrease = 0f;
+                DecreasePower();
+            }
+        }
+
+
     }
+
+    private void Moving()
+    {
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+
+
+        transform.Translate(Vector3.forward * Time.deltaTime * speed * verticalInput);
+
+        transform.Rotate(Vector3.up * horizontalInput * turnSpeed * Time.deltaTime);
+    }
+
+    private void DecreasePower()
+    {
+        // Decrease power by 2
+        powerSupply -= 2;
+
+        // Ensure powerSupply doesn't go below 0
+        powerSupply = Mathf.Max(powerSupply, 0);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("power"))
+        {
+            //powerSupply += 10;
+            
+
+            // Start the coroutine to add power over time
+            StartCoroutine(ChargePowerOverTime());
+        }
+    }
+
+    private IEnumerator ChargePowerOverTime()
+    {
+        isCharging = true;
+        // Wait for 3 seconds
+        yield return new WaitForSeconds(3f);
+
+        // Add 10 units to powerSupply after waiting
+        powerSupply += 10;
+
+        // Limit powerSupply to the maximum value
+        powerSupply = Mathf.Min(powerSupply, maxPowerSupply);
+        isCharging = false;
+    }
+
 }
