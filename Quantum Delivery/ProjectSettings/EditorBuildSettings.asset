@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Start.unity
+    guid: ab81f02378ea6c24498d746d377c481f
+  - enabled: 1
+    path: Assets/Scenes/Bright_City.unity
+    guid: e4b6005d0f92d434a9da2b3f2d98efeb
   m_configObjects: {}
