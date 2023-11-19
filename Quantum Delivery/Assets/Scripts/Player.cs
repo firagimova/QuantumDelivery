@@ -27,6 +27,13 @@ public class Player : MonoBehaviour
 
     public ParticleSystem smoke;
 
+
+    //quest part
+    private GameObject currentDeliveryBuilding;
+    private bool isQuestActive = false;
+    private string requiredSupply;
+    private string collectedSupply = "";
+
     // Start is called before the first frame update
     void Start()
     {
@@ -48,8 +55,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(powerSupply >0)
+        {
+            Moving();
+        }
         
-        Moving();
 
 
 
@@ -133,16 +143,112 @@ public class Player : MonoBehaviour
         powerSupply = Mathf.Max(powerSupply, 0);
     }
 
+    public void AssignQuest(GameObject deliveryBuilding, string requiredSupply)
+    {
+        currentDeliveryBuilding = deliveryBuilding;
+        this.requiredSupply = requiredSupply;
+        isQuestActive = true;
+        collectedSupply = "";
+
+
+        
+        
+        
+        
+    }
+
+
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("power"))
         {
-            //powerSupply += 10;
             
-
-            // Start the coroutine to add power over time
             StartCoroutine(ChargePowerOverTime());
         }
+
+        if (isQuestActive && other.gameObject.CompareTag("delivery") && other.gameObject == currentDeliveryBuilding)
+        {
+            // Check if the player has the required supply for the quest
+            if (CheckSupply())
+            {
+                // Quest completed successfully
+                Debug.Log("Quest Completed!");
+                EndQuest();
+            }
+            else
+            {
+                // Quest failed, player delivered the wrong supply
+                Debug.Log("Wrong Supply!");
+                
+            }
+        }
+
+        if (isQuestActive ) 
+        {
+            CheckSupplyPlaceInteraction(other);
+        }
+
+
+    }
+
+    private void CheckSupplyPlaceInteraction(Collider other)
+    {
+        if (other.gameObject.CompareTag("pharmacy"))
+        {
+            collectedSupply = "pharmacy";
+            
+        }
+        else if (other.gameObject.CompareTag("grocery"))
+        {
+            collectedSupply = "grocery";
+            
+        }
+        else if (other.gameObject.CompareTag("supermarket"))
+        {
+            collectedSupply = "supermarket";
+            
+        }
+        else if (other.gameObject.CompareTag("restaurant"))
+        {
+            collectedSupply = "restaurant";
+
+        }
+        else if (other.gameObject.CompareTag("petShop"))
+        {
+            collectedSupply = "petShop";
+
+        }
+        else if (other.gameObject.CompareTag("butcher"))
+        {
+            collectedSupply = "butcher";
+
+        }
+        else if (other.gameObject.CompareTag("technology"))
+        {
+            collectedSupply = "technology";
+
+        }
+        // Add more else-if blocks for other supply places as needed
+    }
+
+
+    private bool CheckSupply()
+    {
+        
+        return collectedSupply == requiredSupply;
+    }
+
+    private void EndQuest()
+    {
+        // Reset quest-related variables
+        currentDeliveryBuilding = null;
+        requiredSupply = "";
+        isQuestActive = false;
+        collectedSupply = "";
+
+        // Start a new quest
+        FindObjectOfType<QuestManager>().StartNewQuest();
     }
 
     private IEnumerator ChargePowerOverTime()

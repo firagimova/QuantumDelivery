@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9910ca9e76c22cc4ba035257a87a8713, type: 3}
       propertyPath: m_TagString
-      value: supplier
+      value: pharmacy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

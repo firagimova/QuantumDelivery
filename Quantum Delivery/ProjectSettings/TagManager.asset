@@ -5,8 +5,14 @@ TagManager:
   serializedVersion: 2
   tags:
   - destination
-  - supplier
   - power
+  - grocery
+  - restaurant
+  - pharmacy
+  - supermarket
+  - petShop
+  - technology
+  - butcher
   layers:
   - Default
   - TransparentFX

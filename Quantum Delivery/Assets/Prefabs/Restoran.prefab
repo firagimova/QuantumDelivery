@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 64576d7f3a246f545af7e00d7f83ed53, type: 3}
       propertyPath: m_TagString
-      value: supplier
+      value: restaurant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
