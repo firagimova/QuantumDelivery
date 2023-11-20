@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
     float verticalInput;
     Rigidbody rb;
 
-    float speed = 5.0f;
+    float speed = 15.0f;
     float turnSpeed = 30.0f;
 
     public int powerSupply = 100;
@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     bool isCharging = false;
 
     float timeSinceLastPowerDecrease = 0f;
-    float powerDecreaseInterval = 60f;
+    float powerDecreaseInterval = 10f;
 
 
     public GameObject[] lights; 
@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
     public ParticleSystem smoke;
 
 
-    //quest part
+    
     private GameObject currentDeliveryBuilding;
     private bool isQuestActive = false;
     private string requiredSupply;
@@ -136,10 +136,10 @@ public class Player : MonoBehaviour
 
     private void DecreasePower()
     {
-        // Decrease power by 2
-        powerSupply -= 2;
+        
+        powerSupply -= 5;
 
-        // Ensure powerSupply doesn't go below 0
+        
         powerSupply = Mathf.Max(powerSupply, 0);
     }
 
@@ -151,9 +151,6 @@ public class Player : MonoBehaviour
         collectedSupply = "";
 
 
-        
-        
-        
         
     }
 
@@ -167,18 +164,18 @@ public class Player : MonoBehaviour
             StartCoroutine(ChargePowerOverTime());
         }
 
-        if (isQuestActive && other.gameObject.CompareTag("delivery") && other.gameObject == currentDeliveryBuilding)
+        if (isQuestActive && other.gameObject.CompareTag("destination") && other.gameObject == currentDeliveryBuilding)
         {
-            // Check if the player has the required supply for the quest
+            
             if (CheckSupply())
             {
-                // Quest completed successfully
+                
                 Debug.Log("Quest Completed!");
                 EndQuest();
             }
             else
             {
-                // Quest failed, player delivered the wrong supply
+                
                 Debug.Log("Wrong Supply!");
                 
             }
@@ -229,7 +226,7 @@ public class Player : MonoBehaviour
             collectedSupply = "technology";
 
         }
-        // Add more else-if blocks for other supply places as needed
+        
     }
 
 
@@ -241,27 +238,40 @@ public class Player : MonoBehaviour
 
     private void EndQuest()
     {
-        // Reset quest-related variables
+        
         currentDeliveryBuilding = null;
         requiredSupply = "";
         isQuestActive = false;
         collectedSupply = "";
 
-        // Start a new quest
+        
+        FindObjectOfType<QuestManager>().EndQuest();
         FindObjectOfType<QuestManager>().StartNewQuest();
     }
 
     private IEnumerator ChargePowerOverTime()
     {
         isCharging = true;
-        // Wait for 3 seconds
-        yield return new WaitForSeconds(3f);
+        float elapsedTime = 0f;
+        float chargingDuration = 3f;
 
-        // Add 10 units to powerSupply after waiting
-        powerSupply += 10;
+        while (elapsedTime < chargingDuration)
+        {
+            
+            float completionPercentage = elapsedTime / chargingDuration;
 
-        // Limit powerSupply to the maximum value
-        powerSupply = Mathf.Min(powerSupply, maxPowerSupply);
+            
+            powerSupply = (int)Mathf.Lerp(powerSupply, maxPowerSupply, completionPercentage);
+
+            
+            elapsedTime += Time.deltaTime;
+
+            
+            yield return null;
+        }
+
+        
+        powerSupply = maxPowerSupply;
         isCharging = false;
     }
 
