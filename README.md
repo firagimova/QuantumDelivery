@@ -31,5 +31,5 @@ Check the Windows build or https://firuzarahimova.itch.io/quantum-delivery
 <h2>The TEAM</h2>
 <b><i>Firuza Rahimova (Game Developer)</i></b> <br>
 <b><i>Murat Ergin (Game Designer)</i></b> <br>
-<b><i>Eycan Cihan Cam (Artist)</i></b>
+<b><i>Eycan Cihan Çam (Artist)</i></b>
 
